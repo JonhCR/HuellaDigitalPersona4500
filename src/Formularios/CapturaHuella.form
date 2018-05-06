@@ -280,7 +280,7 @@
                       <Color blue="66" green="0" red="0" type="rgb"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Creado por : Jhon Moreira"/>
+                    <Property name="text" type="java.lang.String" value="Creado por : SolutionsCR"/>
                   </Properties>
                 </Component>
               </SubComponents>
