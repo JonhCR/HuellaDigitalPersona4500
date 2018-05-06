@@ -308,7 +308,7 @@ protected void Iniciar(){
    Lector.addSensorListener(new DPFPSensorAdapter() {
     @Override public void fingerTouched(final DPFPSensorEvent e) {
     SwingUtilities.invokeLater(new Runnable() {	public void run() {
-    //EnviarTexto("El dedo ha sido colocado sobre el Lector de Huella");
+    EnviarTexto("El dedo ha sido colocado sobre el Lector de Huella");
     }});}
     @Override public void fingerGone(final DPFPSensorEvent e) {
     SwingUtilities.invokeLater(new Runnable() {	public void run() {
