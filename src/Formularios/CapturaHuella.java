@@ -31,7 +31,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,10 +56,11 @@ import org.apache.http.util.EntityUtils;
  */
 public class CapturaHuella extends javax.swing.JDialog {
     
+    private final String URL_ENDPOINT = "http://donalds.test/crear/control/huelladigital";
     //El empleado solo se modifica en la bd del servidor remoto
-    private final int empleado_id = 0;
+    private final String ID_EMPLEADO = "0";
     //El id de la empresa puede ser modificado aqui segun donde este el dispositivo
-    private final int empresa_id = 0;
+    private final String ID_EMPRESA = "0";
 
     /** Creates new form CapturaHuella */
     public CapturaHuella() {
@@ -534,20 +538,20 @@ ConexionBD con=new ConexionBD();
 
 private void apiEnviarRegistro(String nombre)
 {
-    
+    String fecha = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+    String hora = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 
     HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead 
 
     try {
 
-        HttpPost request = new HttpPost("http://donalds.test/crear/control/huelladigital");
+        HttpPost request = new HttpPost(URL_ENDPOINT);
         List params = new ArrayList();
         params.add(new BasicNameValuePair("nombre", nombre));
-        params.add(new BasicNameValuePair("fecha", "5-5-2018"));
-        params.add(new BasicNameValuePair("hora", "21:12:51"));
-        params.add(new BasicNameValuePair("id_empleado", "0"));
-        params.add(new BasicNameValuePair("id_empresa", "0"));
-        //StringEntity params =new StringEntity("{\"nombre\":\""+nombre+"\" , \"fecha\":\""+"5-5-2018"+"\" , \"hora\":\""+"21:12:51"+"\" , \"id_empleado\":\""+empleado_id+"\" , \"id_empresa\":\""+empresa_id+"\"   }");
+        params.add(new BasicNameValuePair("fecha", fecha));
+        params.add(new BasicNameValuePair("hora", hora));
+        params.add(new BasicNameValuePair("id_empleado", ID_EMPLEADO ));
+        params.add(new BasicNameValuePair("id_empresa", ID_EMPRESA));
         request.addHeader("content-type", "application/x-www-form-urlencoded");
         request.setEntity(new UrlEncodedFormEntity(params));
         HttpResponse response = httpClient.execute(request);
