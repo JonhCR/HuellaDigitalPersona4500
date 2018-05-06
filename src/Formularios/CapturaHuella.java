@@ -31,23 +31,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 
 
 /**
@@ -56,13 +51,14 @@ import org.apache.http.util.EntityUtils;
  */
 public class CapturaHuella extends javax.swing.JDialog {
     
+    //Url Api de consumo
     private final String URL_ENDPOINT = "http://donalds.test/crear/control/huelladigital";
     //El empleado solo se modifica en la bd del servidor remoto
     private final String ID_EMPLEADO = "0";
     //El id de la empresa puede ser modificado aqui segun donde este el dispositivo
-    private final String ID_EMPRESA = "0";
+    private final String ID_EMPRESA = "1";
 
-    /** Creates new form CapturaHuella */
+    /** Crea un nuevo formulario de captura para huellas digitales */
     public CapturaHuella() {
         try {
          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -343,62 +339,62 @@ protected void Iniciar(){
  public DPFPFeatureSet featuresinscripcion;
  public DPFPFeatureSet featuresverificacion;
 
- public  void ProcesarCaptura(DPFPSample sample)
- {
- // Procesar la muestra de la huella y crear un conjunto de características con el propósito de inscripción.
- featuresinscripcion = extraerCaracteristicas(sample, DPFPDataPurpose.DATA_PURPOSE_ENROLLMENT);
+public  void ProcesarCaptura(DPFPSample sample)
+{
+    // Procesar la muestra de la huella y crear un conjunto de características con el propósito de inscripción.
+    featuresinscripcion = extraerCaracteristicas(sample, DPFPDataPurpose.DATA_PURPOSE_ENROLLMENT);
 
- // Procesar la muestra de la huella y crear un conjunto de características con el propósito de verificacion.
- featuresverificacion = extraerCaracteristicas(sample, DPFPDataPurpose.DATA_PURPOSE_VERIFICATION);
+    // Procesar la muestra de la huella y crear un conjunto de características con el propósito de verificacion.
+    featuresverificacion = extraerCaracteristicas(sample, DPFPDataPurpose.DATA_PURPOSE_VERIFICATION);
 
- // Comprobar la calidad de la muestra de la huella y lo añade a su reclutador si es bueno
- if (featuresinscripcion != null)
-     try{
-     System.out.println("Las Caracteristicas de la Huella han sido creada");
-     Reclutador.addFeatures(featuresinscripcion);// Agregar las caracteristicas de la huella a la plantilla a crear
+    // Comprobar la calidad de la muestra de la huella y lo añade a su reclutador si es bueno
+    if (featuresinscripcion != null)
+        try{
+        System.out.println("Las Caracteristicas de la Huella han sido creada");
+        Reclutador.addFeatures(featuresinscripcion);// Agregar las caracteristicas de la huella a la plantilla a crear
 
-     // Dibuja la huella dactilar capturada.
-     Image image=CrearImagenHuella(sample);
-     DibujarHuella(image);
-     
-     try {
-         identificarHuella();
-     } catch (IOException ex) {
-         Logger.getLogger(CapturaHuella.class.getName()).log(Level.SEVERE, null, ex);
-     }
-     
-     //btnVerificar.setEnabled(true);
-     btnIdentificar.setEnabled(true);
+        // Dibuja la huella dactilar capturada.
+        Image image=CrearImagenHuella(sample);
+        DibujarHuella(image);
 
-     }catch (DPFPImageQualityException ex) {
-     System.err.println("Error: "+ex.getMessage());
-     }
+        try {
+            identificarHuella();
+        } catch (IOException ex) {
+            Logger.getLogger(CapturaHuella.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-     finally {
-     EstadoHuellas();
-     // Comprueba si la plantilla se ha creado.
-	switch(Reclutador.getTemplateStatus())
-        {
-            case TEMPLATE_STATUS_READY:	// informe de éxito y detiene  la captura de huellas
-	    stop();
-            setTemplate(Reclutador.getTemplate());
-	    EnviarTexto("La Plantilla de la Huella ha Sido Creada, ya puede Guardarla");
-	    btnIdentificar.setEnabled(false);
-            btnVerificar.setEnabled(false);
-            btnGuardar.setEnabled(true);
-            btnGuardar.grabFocus();
-            break;
+        //btnVerificar.setEnabled(true);
+        btnIdentificar.setEnabled(true);
 
-	    case TEMPLATE_STATUS_FAILED: // informe de fallas y reiniciar la captura de huellas
-	    Reclutador.clear();
-            stop();
-	    EstadoHuellas();
-	    setTemplate(null);
-	    JOptionPane.showMessageDialog(CapturaHuella.this, "La Plantilla de la Huella no pudo ser creada, Repita el Proceso", "Inscripcion de Huellas Dactilares", JOptionPane.ERROR_MESSAGE);
-	    start();
-	    break;
-	}
-	     }
+        }catch (DPFPImageQualityException ex) {
+        System.err.println("Error: "+ex.getMessage());
+        }
+
+        finally {
+        EstadoHuellas();
+        // Comprueba si la plantilla se ha creado.
+           switch(Reclutador.getTemplateStatus())
+           {
+               case TEMPLATE_STATUS_READY:	// informe de éxito y detiene  la captura de huellas
+               stop();
+               setTemplate(Reclutador.getTemplate());
+               EnviarTexto("La Plantilla de la Huella ha Sido Creada, ya puede Guardarla");
+               btnIdentificar.setEnabled(false);
+               btnVerificar.setEnabled(false);
+               btnGuardar.setEnabled(true);
+               btnGuardar.grabFocus();
+               break;
+
+               case TEMPLATE_STATUS_FAILED: // informe de fallas y reiniciar la captura de huellas
+               Reclutador.clear();
+               stop();
+               EstadoHuellas();
+               setTemplate(null);
+               JOptionPane.showMessageDialog(CapturaHuella.this, "La Plantilla de la Huella no pudo ser creada, Repita el Proceso", "Inscripcion de Huellas Dactilares", JOptionPane.ERROR_MESSAGE);
+               start();
+               break;
+           }
+                }
 }
 
  public  DPFPFeatureSet extraerCaracteristicas(DPFPSample sample, DPFPDataPurpose purpose){
@@ -410,15 +406,15 @@ protected void Iniciar(){
      }
 }
 
-  public  Image CrearImagenHuella(DPFPSample sample) {
+public  Image CrearImagenHuella(DPFPSample sample) {
 	return DPFPGlobal.getSampleConversionFactory().createImage(sample);
 }
 
-  public void DibujarHuella(Image image) {
+public void DibujarHuella(Image image) {
         lblImagenHuella.setIcon(new ImageIcon(
         image.getScaledInstance(lblImagenHuella.getWidth(), lblImagenHuella.getHeight(), Image.SCALE_DEFAULT)));
         repaint();
- }
+}
 
 public  void EstadoHuellas(){
 	EnviarTexto("Plantillas necesarias para guardar una nueva huella : "+ Reclutador.getFeaturesNeeded());
@@ -438,27 +434,27 @@ public  void stop(){
         //EnviarTexto("No se está usando el Lector de Huella Dactilar ");
 }
 
-    public DPFPTemplate getTemplate() {
-        return template;
-    }
+public DPFPTemplate getTemplate() {
+    return template;
+}
 
-    public void setTemplate(DPFPTemplate template) {
+public void setTemplate(DPFPTemplate template) {
         DPFPTemplate old = this.template;
 	this.template = template;
 	firePropertyChange(TEMPLATE_PROPERTY, old, template);
-    }
+}
 
 ConexionBD con=new ConexionBD();
  /*
   * Guarda los datos de la huella digital actual en la base de datos
   */
-    public void guardarHuella(){
+public void guardarHuella(){
      //Obtiene los datos del template de la huella actual
      ByteArrayInputStream datosHuella = new ByteArrayInputStream(template.serialize());
      Integer tamañoHuella=template.serialize().length;
 
      //Pregunta el nombre de la persona a la cual corresponde dicha huella
-     String nombre = JOptionPane.showInputDialog("Nombre:");
+     String nombre = JOptionPane.showInputDialog("Nombre Empleado:");
      try {
      //Establece los valores para la sentencia SQL
      Connection c=con.conectar(); //establece la conexion con la BD
@@ -555,7 +551,6 @@ private void apiEnviarRegistro(String nombre)
         request.addHeader("content-type", "application/x-www-form-urlencoded");
         request.setEntity(new UrlEncodedFormEntity(params));
         HttpResponse response = httpClient.execute(request);
-        System.out.println(EntityUtils.toString(response.getEntity()));
         int code = response.getStatusLine().getStatusCode();
         
         if(code == 200)
@@ -568,6 +563,7 @@ private void apiEnviarRegistro(String nombre)
         
         //Limpia la consola de eventos
         txtArea.setText(null);
+        
     }catch (Exception ex) {
         System.out.println(ex.getMessage());
     } 
