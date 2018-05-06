@@ -33,6 +33,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 
 /**
@@ -414,7 +419,7 @@ public  void start(){
 
 public  void stop(){
         Lector.stopCapture();
-        EnviarTexto("No se está usando el Lector de Huella Dactilar ");
+        //EnviarTexto("No se está usando el Lector de Huella Dactilar ");
 }
 
     public DPFPTemplate getTemplate() {
@@ -490,11 +495,10 @@ ConexionBD con=new ConexionBD();
        //Si encuentra correspondencia dibuja el mapa
        //e indica el nombre de la persona que coincidió.
        if (result.isVerified()){
-       //crea la imagen de los datos guardado de las huellas guardadas en la base de datos
-       JOptionPane.showMessageDialog(null, "Has registrado un evento, gracias  "+nombre,"Empleado Encontrado", JOptionPane.INFORMATION_MESSAGE);
+       //Envia el registro al servidor
+       apiEnviarRegistro(nombre);
        Reclutador.clear();
        stop();
-       EstadoHuellas();
        setTemplate(null);
        lblImagenHuella.setIcon(null);
        start();
@@ -516,6 +520,37 @@ ConexionBD con=new ConexionBD();
 * @param args the command line arguments
 */
 
+private void apiEnviarRegistro(String nombre)
+{
+    
+
+    HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead 
+
+    try {
+
+        HttpPost request = new HttpPost("http://donalds.test/crear/control/huelladigital");
+        StringEntity params =new StringEntity("details={\"name\":\"myname\",\"age\":\"20\"} ");
+        request.addHeader("content-type", "application/x-www-form-urlencoded");
+        request.setEntity(params);
+        HttpResponse response = httpClient.execute(request);
+        int code = response.getStatusLine().getStatusCode();
+        
+        if(code == 200)
+        {
+            JOptionPane.showMessageDialog(null, nombre + " tu registro quedó almacenado con éxito!","Éxito", JOptionPane.INFORMATION_MESSAGE);
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un problema contactando al servidor externo.\nRevisa conexion a internet e intenta de nuevo","Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        //Limpia la consola de eventos
+        txtArea.setText(null);
+    }catch (Exception ex) {
+        System.out.println(ex.getMessage());
+    } 
+}
+  
+  
 public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
