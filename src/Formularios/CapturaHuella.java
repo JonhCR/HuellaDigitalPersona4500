@@ -31,13 +31,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 
 /**
@@ -45,6 +52,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
  * @author Jhon Moreira
  */
 public class CapturaHuella extends javax.swing.JDialog {
+    
+    //El empleado solo se modifica en la bd del servidor remoto
+    private final int empleado_id = 0;
+    //El id de la empresa puede ser modificado aqui segun donde este el dispositivo
+    private final int empresa_id = 0;
 
     /** Creates new form CapturaHuella */
     public CapturaHuella() {
@@ -529,10 +541,17 @@ private void apiEnviarRegistro(String nombre)
     try {
 
         HttpPost request = new HttpPost("http://donalds.test/crear/control/huelladigital");
-        StringEntity params =new StringEntity("details={\"name\":\"myname\",\"age\":\"20\"} ");
+        List params = new ArrayList();
+        params.add(new BasicNameValuePair("nombre", nombre));
+        params.add(new BasicNameValuePair("fecha", "5-5-2018"));
+        params.add(new BasicNameValuePair("hora", "21:12:51"));
+        params.add(new BasicNameValuePair("id_empleado", "0"));
+        params.add(new BasicNameValuePair("id_empresa", "0"));
+        //StringEntity params =new StringEntity("{\"nombre\":\""+nombre+"\" , \"fecha\":\""+"5-5-2018"+"\" , \"hora\":\""+"21:12:51"+"\" , \"id_empleado\":\""+empleado_id+"\" , \"id_empresa\":\""+empresa_id+"\"   }");
         request.addHeader("content-type", "application/x-www-form-urlencoded");
-        request.setEntity(params);
+        request.setEntity(new UrlEncodedFormEntity(params));
         HttpResponse response = httpClient.execute(request);
+        System.out.println(EntityUtils.toString(response.getEntity()));
         int code = response.getStatusLine().getStatusCode();
         
         if(code == 200)
