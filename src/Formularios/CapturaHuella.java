@@ -27,6 +27,11 @@ import BD.ConexionBD;
 import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,7 +46,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 
@@ -52,7 +62,7 @@ import org.apache.http.message.BasicNameValuePair;
 public class CapturaHuella extends javax.swing.JDialog {
     
     //Url Api de consumo
-    private final String URL_ENDPOINT = "http://donalds.test/crear/control/huelladigital";
+    private final String URL_ENDPOINT = "https://donaldsbarbershop.net/crear/control/huelladigital";
     //El empleado solo se modifica en la bd del servidor remoto
     private final String ID_EMPLEADO = "0";
     //El id de la empresa puede ser modificado aqui segun donde este el dispositivo
@@ -523,7 +533,13 @@ public void guardarHuella(){
        } catch (SQLException e) {
        //Si ocurre un error lo indica en la consola
        System.err.println("Error al identificar huella dactilar."+e.getMessage());
-       }finally{
+       } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(CapturaHuella.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyStoreException ex) {
+            Logger.getLogger(CapturaHuella.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyManagementException ex) {
+            Logger.getLogger(CapturaHuella.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
        con.desconectar();
        }
    }
@@ -532,12 +548,22 @@ public void guardarHuella(){
 * @param args the command line arguments
 */
 
-private void apiEnviarRegistro(String nombre)
+private void apiEnviarRegistro(String nombre) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException
 {
     String fecha = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
     String hora = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+    
+    SSLContextBuilder builder = new SSLContextBuilder();
+    builder.loadTrustMaterial(null, new TrustStrategy() {
+         public boolean isTrusted(final X509Certificate[] chain, String authType) throws CertificateException {
+              return true;
+         }
+    });
+    SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());
 
-    HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead 
+    CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+
+    //HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead 
 
     try {
 
