@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 /**
  *
- * @author 
+ * @author Jhon Moreira
  */
 public class ConexionBD {
 

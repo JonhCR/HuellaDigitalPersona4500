@@ -43,14 +43,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -59,14 +57,14 @@ import org.apache.http.message.BasicNameValuePair;
  *
  * @author Jhon Moreira
  */
-public class CapturaHuella extends javax.swing.JDialog {
+public class CapturaHuella extends javax.swing.JFrame {
     
     //Url Api de consumo
     private final String URL_ENDPOINT = "https://donaldsbarbershop.net/crear/control/huelladigital";
     //El empleado solo se modifica en la bd del servidor remoto
     private final String ID_EMPLEADO = "0";
     //El id de la empresa puede ser modificado aqui segun donde este el dispositivo
-    private final String ID_EMPRESA = "1";
+    private final String ID_EMPRESA = "5";
 
     /** Crea un nuevo formulario de captura para huellas digitales */
     public CapturaHuella() {
@@ -85,23 +83,16 @@ public class CapturaHuella extends javax.swing.JDialog {
     private void initComponents() {
 
         panHuellas = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
         lblImagenHuella = new javax.swing.JLabel();
         panBtns = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        btnSalir = new javax.swing.JButton();
-        btnVerificar = new javax.swing.JButton();
-        btnIdentificar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtArea = new javax.swing.JTextArea();
+        jPanel1 = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Receptor de Huellas - Donalds Heredia, Plaza Vistana");
+        setTitle("Receptor de Huellas - Donalds Heredia, Plaza Real Cariari ");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -112,47 +103,18 @@ public class CapturaHuella extends javax.swing.JDialog {
             }
         });
 
+        panHuellas.setBackground(new java.awt.Color(255, 255, 255));
         panHuellas.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Huella Digital Capturada", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        panHuellas.setPreferredSize(new java.awt.Dimension(400, 270));
+        panHuellas.setPreferredSize(new java.awt.Dimension(400, 235));
         panHuellas.setLayout(new java.awt.BorderLayout());
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jPanel1.setLayout(new java.awt.BorderLayout());
-        jPanel1.add(lblImagenHuella, java.awt.BorderLayout.CENTER);
-
-        panHuellas.add(jPanel1, java.awt.BorderLayout.CENTER);
+        panHuellas.add(lblImagenHuella, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(panHuellas, java.awt.BorderLayout.PAGE_START);
 
+        panBtns.setBackground(new java.awt.Color(255, 255, 255));
         panBtns.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Acciones", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        panBtns.setPreferredSize(new java.awt.Dimension(400, 190));
+        panBtns.setPreferredSize(new java.awt.Dimension(400, 250));
         panBtns.setLayout(new java.awt.BorderLayout());
-
-        jPanel4.setLayout(new java.awt.BorderLayout());
-
-        jPanel2.setPreferredSize(new java.awt.Dimension(366, 90));
-
-        btnSalir.setText("Salir");
-        btnSalir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirActionPerformed(evt);
-            }
-        });
-
-        btnVerificar.setText("Verificar");
-        btnVerificar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVerificarActionPerformed(evt);
-            }
-        });
-
-        btnIdentificar.setText("Identificar");
-        btnIdentificar.setPreferredSize(new java.awt.Dimension(71, 23));
-        btnIdentificar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnIdentificarActionPerformed(evt);
-            }
-        });
 
         txtArea.setColumns(20);
         txtArea.setFont(new java.awt.Font("Lucida Sans", 1, 10)); // NOI18N
@@ -162,6 +124,8 @@ public class CapturaHuella extends javax.swing.JDialog {
         txtArea.setPreferredSize(new java.awt.Dimension(200, 180));
         jScrollPane1.setViewportView(txtArea);
 
+        panBtns.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
         btnGuardar.setText("Guardar Nueva Huella");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,84 +134,33 @@ public class CapturaHuella extends javax.swing.JDialog {
         });
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/logo-black.png"))); // NOI18N
-        jLabel2.setText("jLabel2");
 
-        jPanel3.setPreferredSize(new java.awt.Dimension(366, 20));
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 175, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 20, Short.MAX_VALUE)
-        );
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 102));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Creado por : SolutionsCR");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(btnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                        .addComponent(btnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                 .addComponent(btnGuardar)
-                .addGap(5, 5, 5)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnIdentificar, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(9, 9, 9)
-                        .addComponent(jLabel1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnVerificar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(97, 97, 97))
+                .addGap(14, 14, 14))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        jPanel4.add(jPanel2, java.awt.BorderLayout.CENTER);
-
-        panBtns.add(jPanel4, java.awt.BorderLayout.CENTER);
+        panBtns.add(jPanel1, java.awt.BorderLayout.PAGE_END);
 
         getContentPane().add(panBtns, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(459, 499));
+        setSize(new java.awt.Dimension(459, 529));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -256,9 +169,6 @@ public class CapturaHuella extends javax.swing.JDialog {
 	start();
         EstadoHuellas();
         btnGuardar.setEnabled(false);
-        btnIdentificar.setEnabled(false);
-        btnVerificar.setEnabled(false);
-        btnSalir.grabFocus();
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -271,24 +181,6 @@ public class CapturaHuella extends javax.swing.JDialog {
         lblImagenHuella.setIcon(null);
         start();
     }//GEN-LAST:event_btnGuardarActionPerformed
-
-    private void btnIdentificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIdentificarActionPerformed
-        try {
-            identificarHuella();
-            Reclutador.clear();
-        } catch (IOException ex) {
-            Logger.getLogger(CapturaHuella.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnIdentificarActionPerformed
-
-    private void btnVerificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerificarActionPerformed
-        String nombre = JOptionPane.showInputDialog("Nombre a verificar:");
-        Reclutador.clear();
-    }//GEN-LAST:event_btnVerificarActionPerformed
-
-    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_btnSalirActionPerformed
 
 //Varible que permite iniciar el dispositivo de lector de huella conectado
 // con sus distintos metodos.
@@ -331,6 +223,7 @@ protected void Iniciar(){
     @Override public void fingerTouched(final DPFPSensorEvent e) {
     SwingUtilities.invokeLater(new Runnable() {	public void run() {
     EnviarTexto("El dedo ha sido colocado sobre el Lector de Huella");
+    EnviarTexto("Realizando lectura dactilar...");
     }});}
     @Override public void fingerGone(final DPFPSensorEvent e) {
     SwingUtilities.invokeLater(new Runnable() {	public void run() {
@@ -373,8 +266,6 @@ public  void ProcesarCaptura(DPFPSample sample)
             Logger.getLogger(CapturaHuella.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //btnVerificar.setEnabled(true);
-        btnIdentificar.setEnabled(true);
 
         }catch (DPFPImageQualityException ex) {
         System.err.println("Error: "+ex.getMessage());
@@ -389,8 +280,6 @@ public  void ProcesarCaptura(DPFPSample sample)
                stop();
                setTemplate(Reclutador.getTemplate());
                EnviarTexto("La Plantilla de la Huella ha Sido Creada, ya puede Guardarla");
-               btnIdentificar.setEnabled(false);
-               btnVerificar.setEnabled(false);
                btnGuardar.setEnabled(true);
                btnGuardar.grabFocus();
                break;
@@ -478,7 +367,6 @@ public void guardarHuella(){
      JOptionPane.showMessageDialog(null,"Huella Guardada Correctamente");
      con.desconectar();
      btnGuardar.setEnabled(false);
-     btnVerificar.grabFocus();
      } catch (SQLException ex) {
      //Si ocurre un error lo indica en la consola
      System.err.println("Error al guardar los datos de la huella.");
@@ -494,7 +382,7 @@ public void guardarHuella(){
      try {
        //Establece los valores para la sentencia SQL
        Connection c=con.conectar();
-
+       
        //Obtiene todas las huellas de la bd
        PreparedStatement identificarStmt = c.prepareStatement("SELECT huenombre,huehuella FROM somhue");
        ResultSet rs = identificarStmt.executeQuery();
@@ -563,8 +451,6 @@ private void apiEnviarRegistro(String nombre) throws NoSuchAlgorithmException, K
 
     CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
 
-    //HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead 
-
     try {
 
         HttpPost request = new HttpPost(URL_ENDPOINT);
@@ -581,7 +467,7 @@ private void apiEnviarRegistro(String nombre) throws NoSuchAlgorithmException, K
         
         if(code == 200)
         {
-            JOptionPane.showMessageDialog(null, nombre + " tu registro quedó almacenado con éxito!","Éxito", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Tu registro quedó almacenado: "+ fecha ,nombre, JOptionPane.INFORMATION_MESSAGE);
         }
         else{
             JOptionPane.showMessageDialog(null, "Ha ocurrido un problema contactando al servidor externo.\nRevisa conexion a internet e intenta de nuevo","Error", JOptionPane.ERROR_MESSAGE);
@@ -606,15 +492,8 @@ public static void main(String args[]) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnIdentificar;
-    private javax.swing.JButton btnSalir;
-    private javax.swing.JButton btnVerificar;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblImagenHuella;
     private javax.swing.JPanel panBtns;
